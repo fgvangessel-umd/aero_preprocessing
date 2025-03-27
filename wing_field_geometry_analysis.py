@@ -8,9 +8,10 @@ import argparse
 def main():
     # Parse COmmand Line Inputs
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_file', required=True, help='Path to input file')
-    parser.add_argument('--output_dir', required=True, help='Path to output directory')
-    parser.add_argument('--data_type', required=True, help='aero data type')
+    parser.add_argument('--input_file', type=str, required=True, help='Path to input file')
+    parser.add_argument('--output_dir', type=str, required=True, help='Path to output directory')
+    parser.add_argument('--data_type', type=str, required=True, help='aero data type')
+    parser.add_argument('--num_spline_points', type=int, required=True, help='number of sample points along spline')
     args = parser.parse_args()
 
     with open(args.input_file, 'rb') as handle:
@@ -23,7 +24,7 @@ def main():
             ndata += 1
 
     # Set spline sample points, dimensionality, number of field variables, and number of cross-sections
-    ns = 100 # Spline samples per top and bottom
+    ns = args.num_spline_points # Spline samples per top and bottom
     if args.data_type == '2D':
         ndim = 3 # Keep trivial z-direction data
         nvar = 4 # Keep trivial z-direction data
@@ -116,6 +117,9 @@ def main():
 
     np.save(args.output_dir+'geometry_array.npy', geom_array)
     np.save(args.output_dir+'field_array.npy', field_array)
+
+    print(geom_array.shape)
+    print(field_array.shape)
 
 if __name__ == '__main__':
     main()
